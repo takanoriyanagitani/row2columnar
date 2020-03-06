@@ -1,3 +1,4 @@
+from functools import partial
 from itertools import imap
 
 def consume_key(key="", values=dict()):
@@ -9,3 +10,6 @@ def consume_key(key="", values=dict()):
 def consume_dict(d=dict(), keys=[], result_consumer=sum):
   results = imap(partial(consume_key, values=d), keys)
   return result_consumer(results)
+
+#def drows2columnar(drows=[], keys=[], result_consumer=sum):
+#  return
