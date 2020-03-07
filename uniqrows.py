@@ -20,3 +20,8 @@ def g2r_default(t=tuple(), iter2row=i2r_default, alt=None):
 def merged_rows2uniq(rows=iter([]), r2k=itemgetter(0), group2row=g2r_default):
   grouped = groupby(rows, r2k)
   return imap(g2r_default, grouped)
+
+def uniqrows(r1=iter([]), r2=iter([]), r2k=itemgetter(0), group2row=g2r_default):
+  merged = merge_rows(r1, r2, r2k)
+  rows   = imap(itemgetter(1), merged)
+  return merged_rows2uniq(rows, r2k, group2row)
