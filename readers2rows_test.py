@@ -86,3 +86,30 @@ def test_column2i_ledouble():
   assert e[2] == a[2]
   assert e[3] == a[3]
   s.close()
+
+def test_column2i_leavx256d():
+  s = StringIO()
+
+  s.write(struct.pack("<d", 0.0))
+  s.write(struct.pack("<d", 1.0))
+  s.write(struct.pack("<d", 2.0))
+  s.write(struct.pack("<d", float("nan")))
+
+  s.write(struct.pack("<d", 4.0))
+  s.write(struct.pack("<d", 5.0))
+  s.write(struct.pack("<d", 6.0))
+  s.write(struct.pack("<d", 7.0))
+
+  s.seek(0, os.SEEK_SET)
+  e = [
+    (0.0, 1.0, 2.0, 0.0),
+    (4.0, 5.0, 6.0, 7.0),
+  ]
+  a = list(readers2rows.column2i_leavx256d(s))
+  assert tuple == type(a[0])
+  assert tuple == type(a[1])
+  assert 4 == len(a[0])
+  assert 4 == len(a[1])
+  assert e[0] == a[0]
+  assert e[1] == a[1]
+  s.close()

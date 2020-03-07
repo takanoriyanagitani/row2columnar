@@ -47,5 +47,10 @@ def column2i_ledouble(i=sys.stdin, f=nan2alt):
   limited = takewhile(lambda b: bytes == type(b) and 8 == len(b), reads)
   return imap(lebytes2float_fast, limited)
 
+def column2i_leavx256d(i=sys.stdin, f=nan2alt):
+  reads = imap(methodcaller("read", 32), repeat(i))
+  limited = takewhile(lambda b: bytes == type(b) and 32 == len(b), reads)
+  return imap(lebytes2avx256d_fast, limited)
+
 #def readers2rows(readers=list()):
 #  pass
