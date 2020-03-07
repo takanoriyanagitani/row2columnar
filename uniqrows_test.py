@@ -73,3 +73,26 @@ def test_merge_rows():
   assert dict(i=2, n="mf", h=3776) == a4[1]
   assert dict(i=2, n="mf", h=3776) == a5[1]
   assert dict(i=3, n="mt", h= 599) == a6[1]
+
+def test_merged_rows2uniq():
+  rows = iter([
+    dict(n="tt", h=333),
+    dict(n="tt", h=333),
+    dict(n="st", h=634),
+    dict(n="mt", h=599),
+  ])
+  r2k = itemgetter("n")
+  uniq = list(uniqrows.merged_rows2uniq(rows, r2k))
+
+  assert 3 == len(uniq)
+  a0 = uniq[0]
+  a1 = uniq[1]
+  a2 = uniq[2]
+
+  assert dict == type(a0)
+  assert dict == type(a1)
+  assert dict == type(a2)
+
+  assert dict(n="tt", h=333) == a0
+  assert dict(n="st", h=634) == a1
+  assert dict(n="mt", h=599) == a2
