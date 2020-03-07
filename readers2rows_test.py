@@ -145,3 +145,14 @@ def test_readers2iterators():
     "h,w",
     "helo, world",
   ] == lt
+
+def test_iterators2rows_t():
+  i1 = iter([0,1,2])
+  i2 = iter([3,4])
+  e  = [
+    (0, 3),
+    (1, 4),
+    (2, None),
+  ]
+  a  = list(readers2rows.iterators2rows_t((i1, i2)))
+  assert a == e

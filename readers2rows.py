@@ -2,7 +2,7 @@ import json
 import struct
 import math
 import sys
-from itertools import imap, repeat, takewhile
+from itertools import imap, repeat, takewhile, izip_longest
 from operator  import methodcaller
 
 def nnan(f=0.0): return not math.isnan(f)
@@ -56,3 +56,5 @@ def readers2iterators(readers=list(), r2i=list()):
   l = []
   for i, r in enumerate(readers): l.append(r2i[i](r))
   return l
+
+def iterators2rows_t(i=tuple()): return izip_longest(*i)
