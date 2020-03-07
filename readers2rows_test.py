@@ -1,9 +1,11 @@
 import json
 import struct
+import os
+from cStringIO import StringIO
 
 import readers2rows
 
-def test_ftext1():
+def test_column2i_text():
   jsonl = iter([
     json.dumps("helo")+"\n",
     json.dumps("helo, wrld")+"\n",
@@ -12,7 +14,7 @@ def test_ftext1():
     "helo",
     "helo, wrld",
   ]
-  a = list(readers2rows.ftext(jsonl))
+  a = list(readers2rows.column2i_text(jsonl))
   assert e[0] == a[0]
   assert e[1] == a[1]
 
@@ -24,7 +26,7 @@ def test_ftext1():
     "634",
     "333",
   ]
-  a2 = list(readers2rows.ftext(i2, t2v=lambda s: s))
+  a2 = list(readers2rows.column2i_text(i2, t2v=lambda s: s))
   assert e2[0] == a2[0]
   assert e2[1] == a2[1]
   pass
@@ -69,3 +71,18 @@ def test_lebytes2avx256d_fast():
   assert e[1] == a[1]
   assert e[2] == a[2]
   assert e[3] == a[3]
+
+def test_column2i_ledouble():
+  s = StringIO()
+  s.write(struct.pack("<d", 0.0))
+  s.write(struct.pack("<d", 1.0))
+  s.write(struct.pack("<d", 2.0))
+  s.write(struct.pack("<d", float("nan")))
+  s.seek(0, os.SEEK_SET)
+  e = [ 0.0, 1.0, 2.0, 0.0 ]
+  a = list(readers2rows.column2i_ledouble(s))
+  assert e[0] == a[0]
+  assert e[1] == a[1]
+  assert e[2] == a[2]
+  assert e[3] == a[3]
+  s.close()
