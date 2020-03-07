@@ -167,3 +167,85 @@ def test_iterators2rows_l():
   ]
   a  = list(readers2rows.iterators2rows_l([i1, i2]))
   assert a == e
+
+def test_readers2rows():
+  ri = StringIO()
+  rt = StringIO()
+  ra = StringIO()
+
+  ri.write(struct.pack("<qqq", 333, 634, 3776))
+  rt.writelines(iter([
+    json.dumps("tt")+"\n",
+    json.dumps("st")+"\n",
+    json.dumps("mf")+"\n",
+  ]))
+  nan = float("nan")
+  ra.write(struct.pack("<dddd", 0.0, 1.0, 2.0, nan))
+  ra.write(struct.pack("<dddd", 1.0, 2.0, nan, 4.0))
+  ra.write(struct.pack("<dddd", 2.0, nan, 4.0, 5.0))
+  ra.write(struct.pack("<dddd", nan, 4.0, 5.0, 6.0))
+
+  ri.seek(0)
+  rt.seek(0)
+  ra.seek(0)
+
+  readers = [ ri, rt, ra ]
+  r2i = [
+    readers2rows.column2i_leint64,
+    readers2rows.column2i_text,
+    readers2rows.column2i_leavx256d,
+  ]
+  a = list(readers2rows.readers2rows(readers, r2i))
+
+  assert 4 == len(a)
+  a0 = a[0]
+  a1 = a[1]
+  a2 = a[2]
+  a3 = a[3]
+
+  assert tuple == type(a0)
+  assert tuple == type(a1)
+  assert tuple == type(a2)
+  assert tuple == type(a3)
+
+  assert 3 == len(a0)
+  assert 3 == len(a1)
+  assert 3 == len(a2)
+  assert 3 == len(a3)
+
+  assert type(a0[0]) in [long, int]
+  assert type(a1[0]) in [long, int]
+  assert type(a2[0]) in [long, int]
+  assert None == a3[0]
+  assert 333  == a0[0]
+  assert 634  == a1[0]
+  assert 3776 == a2[0]
+
+  assert type(a0[1]) in [str, unicode, bytes]
+  assert type(a1[1]) in [str, unicode, bytes]
+  assert type(a2[1]) in [str, unicode, bytes]
+  assert None == a3[1]
+  assert "tt" == a0[1]
+  assert "st" == a1[1]
+  assert "mf" == a2[1]
+
+  assert tuple == type(a0[2])
+  assert tuple == type(a1[2])
+  assert tuple == type(a2[2])
+  assert tuple == type(a3[2])
+
+  avx0 = a0[2]
+  avx1 = a1[2]
+  avx2 = a2[2]
+  avx3 = a3[2]
+
+  assert 4 == len(avx0)
+  assert 4 == len(avx1)
+  assert 4 == len(avx2)
+  assert 4 == len(avx3)
+
+  assert (0.0, 1.0, 2.0, 0.0) == avx0
+  assert (1.0, 2.0, 0.0, 4.0) == avx1
+  assert (2.0, 0.0, 4.0, 5.0) == avx2
+  assert (0.0, 4.0, 5.0, 6.0) == avx3
+  pass
