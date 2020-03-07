@@ -57,4 +57,5 @@ def readers2iterators(readers=list(), r2i=list()):
   for i, r in enumerate(readers): l.append(r2i[i](r))
   return l
 
-def iterators2rows_t(i=tuple()): return izip_longest(*i)
+def iterators2rows_t(t=tuple()): return izip_longest(*t)
+def iterators2rows_l(l=list()):  return izip_longest(*tuple(l))
