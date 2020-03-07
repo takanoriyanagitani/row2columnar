@@ -58,4 +58,4 @@ def readers2iterators(readers=list(), r2i=list()):
   return l
 
 def iterators2rows_t(t=tuple()): return izip_longest(*t)
-def iterators2rows_l(l=list()):  return izip_longest(*tuple(l))
+def iterators2rows_l(l=list()):  return izip_longest(*l)
