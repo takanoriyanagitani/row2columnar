@@ -113,3 +113,35 @@ def test_column2i_leavx256d():
   assert e[0] == a[0]
   assert e[1] == a[1]
   s.close()
+
+def test_readers2iterators():
+  sf = StringIO()
+  st = StringIO()
+  sf.write(struct.pack("<dddd", 0.0,1.0,2.0,float("nan")))
+  st.writelines(iter([
+    json.dumps("hw")+"\n",
+    json.dumps("helo")+"\n",
+    json.dumps("h,w")+"\n",
+    json.dumps("helo, world")+"\n",
+  ]))
+  sf.seek(0)
+  st.seek(0)
+  readers = [sf, st]
+  r2i = [readers2rows.column2i_ledouble, readers2rows.column2i_text]
+
+  a = readers2rows.readers2iterators(readers, r2i)
+  assert list == type(a)
+  assert 2 == len(a)
+  i0 = a[0]
+  i1 = a[1]
+  lf = list(i0)
+  lt = list(i1)
+  assert 4 == len(lf)
+  assert 4 == len(lt)
+  assert [0.0, 1.0, 2.0, 0.0] == lf
+  assert [
+    "hw",
+    "helo",
+    "h,w",
+    "helo, world",
+  ] == lt

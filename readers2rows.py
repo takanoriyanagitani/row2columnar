@@ -52,5 +52,7 @@ def column2i_leavx256d(i=sys.stdin, f=nan2alt):
   limited = takewhile(lambda b: bytes == type(b) and 32 == len(b), reads)
   return imap(lebytes2avx256d_fast, limited)
 
-#def readers2rows(readers=list()):
-#  pass
+def readers2iterators(readers=list(), r2i=list()):
+  l = []
+  for i, r in enumerate(readers): l.append(r2i[i](r))
+  return l
