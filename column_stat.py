@@ -82,3 +82,18 @@ def m256d2stat_default(stat=dict(), m256d=(0.0,0.0,0.0,0.0), alt=0.0):
 
 def numbers2stat_m256d(d256bits=iter([]), m256d2stat=m256d2stat_default, stat0=dict()):
   return reduce(m256d2stat, d256bits, stat0)
+
+def merge_sum_float(sa=dict(), sb=dict()):
+  a = sa.get("sum", 0.0)
+  b = sb.get("sum", 0.0)
+  return float_add(a, b)
+
+def merge_max_float(sa=dict(), sb=dict()): return max_float(sa.get("max"), sb.get("max"))
+def merge_min_float(sa=dict(), sb=dict()): return min_float(sa.get("min"), sb.get("min"))
+
+def merge_stat_float(s1=dict(), s2=dict()):
+  return {
+    "sum": merge_sum_float(s1, s2),
+    "max": merge_max_float(s1, s2),
+    "min": merge_min_float(s1, s2),
+  }

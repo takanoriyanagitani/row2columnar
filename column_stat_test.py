@@ -106,3 +106,28 @@ def test_numbers2stat_m256d():
   assert tuple == type(mi)
   assert 4 == len(mi)
   assert (1.0, 1.0, 2.0, 3.0) == mi
+
+def test_merge_sum_float():
+  nan = float("nan")
+  assert 0.0 == column_stat.merge_sum_float(dict(), dict())
+  assert 0.0 == column_stat.merge_sum_float(dict(sum=0.0), dict(sum=0.0))
+  assert 3.0 == column_stat.merge_sum_float(dict(sum=1.0), dict(sum=2.0))
+  assert 3.0 == column_stat.merge_sum_float(dict(sum=nan), dict(sum=3.0))
+
+def test_merge_max_float():
+  nan = float("nan")
+  assert math.isnan(column_stat.merge_max_float(dict(), dict()))
+  assert math.isnan(column_stat.merge_max_float(dict(max=nan), dict(max=nan)))
+  assert 0.0 == column_stat.merge_max_float(dict(max=0.0), dict())
+  assert 1.0 == column_stat.merge_max_float(dict(max=1.0), dict())
+  assert 0.0 == column_stat.merge_max_float(dict(max=nan), dict(max=0.0))
+  assert 1.0 == column_stat.merge_max_float(dict(max=1.0), dict(max=0.0))
+
+def test_merge_min_float():
+  nan = float("nan")
+  assert math.isnan(column_stat.merge_min_float(dict(), dict()))
+  assert math.isnan(column_stat.merge_min_float(dict(min=nan), dict(min=nan)))
+  assert 0.0 == column_stat.merge_min_float(dict(min=0.0), dict())
+  assert 1.0 == column_stat.merge_min_float(dict(min=1.0), dict())
+  assert 0.0 == column_stat.merge_min_float(dict(min=nan), dict(min=0.0))
+  assert 0.0 == column_stat.merge_min_float(dict(min=1.0), dict(min=0.0))
