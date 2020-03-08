@@ -89,7 +89,20 @@ def test_numbers2stat_m256d():
   a = column_stat.numbers2stat_m256d(d256bits)
   assert dict == type(a)
   assert "sum" in a
+  assert "max" in a
+  assert "min" in a
+
   s = a["sum"]
   assert tuple == type(s)
   assert 4 == len(s)
   assert (6.0, 8.0, 10.0, 12.0) == s
+
+  ma = a["max"]
+  assert tuple == type(ma)
+  assert 4 == len(ma)
+  assert (3.0, 4.0, 5.0, 5.0) == ma
+
+  mi = a["min"]
+  assert tuple == type(mi)
+  assert 4 == len(mi)
+  assert (1.0, 1.0, 2.0, 3.0) == mi

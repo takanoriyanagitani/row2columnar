@@ -54,10 +54,30 @@ def m256d_add(a=(0.0,0.0,0.0,0.0), b=(0.0,0.0,0.0,0.0), z=(0.0,0.0,0.0,0.0)):
     float_add(na[3], nb[3]),
   )
 
+def m256d_max(a=(0.0,0.0,0.0,0.0), b=(0.0,0.0,0.0,0.0), z=(None,None,None,None)):
+  na = z if None == a else a
+  nb = z if None == b else b
+  return (
+    max_float(na[0], nb[0]),
+    max_float(na[1], nb[1]),
+    max_float(na[2], nb[2]),
+    max_float(na[3], nb[3]),
+  )
+
+def m256d_min(a=(0.0,0.0,0.0,0.0), b=(0.0,0.0,0.0,0.0), z=(None,None,None,None)):
+  na = z if None == a else a
+  nb = z if None == b else b
+  return (
+    min_float(na[0], nb[0]),
+    min_float(na[1], nb[1]),
+    min_float(na[2], nb[2]),
+    min_float(na[3], nb[3]),
+  )
+
 def m256d2stat_default(stat=dict(), m256d=(0.0,0.0,0.0,0.0), alt=0.0):
   stat["sum"] = m256d_add(stat.get("sum", (0,0,0,0,0,0,0,0)), m256d)
-  #stat["max"] = m256d_max(stat.get("sum", None), m256d)
-  #stat["min"] = m256d_min(stat.get("sum", None), m256d)
+  stat["max"] = m256d_max(stat.get("max", None), m256d)
+  stat["min"] = m256d_min(stat.get("min", None), m256d)
   return stat
 
 def numbers2stat_m256d(d256bits=iter([]), m256d2stat=m256d2stat_default, stat0=dict()):
